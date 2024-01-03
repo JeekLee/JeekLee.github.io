@@ -90,6 +90,8 @@ _(그림 I-1-8) Zip List Entry itselflen string(5byte)_
 - ZIP_INT_24B(11110000), 약 800만, `value int 3 byte`
 - ZIP_INT_8B(11111110), 약 150만, `value int 1 byte`
 
+ZipList의 PUSH, POP Operation을 도식화하면 다음과 같다.
+
 ![redis-ziplist-operation](https://github.com/JeekLee/JeekLee.github.io/assets/72681875/e608b0cb-ff84-486b-8c8a-d8da6fb8a35c)
 _(그림 I-1-9) Zip List Operation Example_
 
@@ -163,7 +165,116 @@ _(그림 I-1-15) zsiplist node addition 1_
 ![zskiplist-node1](https://github.com/JeekLee/JeekLee.github.io/assets/72681875/cc25d026-135e-4188-a98f-16d2f162c40a)
 _(그림 I-1-16) zsiplist node addition 2_
 
+# II. Commands
+## 1. ZADD: 생성 및 수정
+```bash
+jeeklee@ubuntu:/dir$ ZADD key score member
+```
+```bash
+jeeklee@ubuntu:/dir$ ZADD fruit 2 apple
+jeeklee@ubuntu:/dir$ ZADD fruit 10 strawberry
+jeeklee@ubuntu:/dir$ ZADD fruit 8 melon 4 orange 15 pineapple 5 banana
+```
 
-# X. References
+## 2. ZSCORE: Value 조회
+```bash
+jeeklee@ubuntu:/dir$ ZSCORE key member
+```
+```bash
+jeeklee@ubuntu:/dir$ ZSCORE fruit banana
+"5"
+```
+
+## 3. ZRANK: 순위 조회
+```bash
+jeeklee@ubuntu:/dir$ ZRANK key member
+```
+```bash
+jeeklee@ubuntu:/dir$ ZRANK fruit melon
+(integer) 2
+```
+
+## 4. ZRANGE: 순위에 따른 범위 조회
+```bash
+jeeklee@ubuntu:/dir$ ZRANGE key start stop
+```
+첫 번째 원소가 0이며, 음수를 통해 끝에서 부터 세는 것 역시 가능하다.
+```bash
+jeeklee@ubuntu:/dir$ ZRANGE key start stop
+```
+```bash
+jeeklee@ubuntu:/dir$ ZRANGE fruit 0 -1  
+1) "orange"  
+2) "banana"  
+3) "melon"  
+4) "strawberry"  
+5) "pineapple"  
+6) "apple"
+```
+```bash
+jeeklee@ubuntu:/dir$ ZRANGE fruit 0 0  
+1) "orange"  
+```
+```bash
+jeeklee@ubuntu:/dir$ ZRANGE fruit -1 -1  
+1) "apple"  
+```
+Value를 함께 표시할 경우, `WITHSCORE` 옵션을 사용한다.
+```bash
+jeeklee@ubuntu:/dir$ ZRANGE fruit 0 -1 WITHSCORES  
+ 1) "orange"
+ 2) "4"
+ 3) "banana"
+ 4) "5"
+ 5) "melon"
+ 6) "8"
+ 7) "strawberry"
+ 8) "10"
+ 9) "pineapple"
+10) "15"  
+11) "apple"  
+12) "20"   
+```
+ZREVRANGE를 통해 역순으로 출력할 수 있다.
+```bash
+jeeklee@ubuntu:/dir$ ZREVRANGE fruit 0 -1 WITHSCORES  
+ 1) "apple"
+ 2) "20"
+ 3) "pineapple"
+ 4) "15"
+ 5) "strawberry"
+ 6) "10"
+ 7) "melon"
+ 8) "8"
+ 9) "banana"
+10) "5"  
+11) "orange"  
+12) "4" 
+```
+
+## 5. ZRANGEBYSCORE: 값에 따른 범위 조회
+```bash
+jeeklee@ubuntu:/dir$ ZRANGEBYSCORE key min max  
+```
+```bash
+jeeklee@ubuntu:/dir$ ZRANGEBYSCORE fruit 6 15 WITHSCORES  
+1) "melon"  
+2) "8"  
+3) "strawberry"  
+4) "10"  
+5) "pineapple"  
+6) "15"  
+```
+
+## 6. ZREM: 특정 멤버 삭제
+```bash
+jeeklee@ubuntu:/dir$ ZREM key member  
+```
+```bash
+jeeklee@ubuntu:/dir$ ZREM fruit pineapple  
+```
+
+# III. References
 1. [Redis Docs](https://redis.io/docs/data-types/)
 2. [Redis Zip List](https://songhayoung.github.io/2021/06/04/Redis/zset-vs-list/#%EA%B0%9C%EC%9A%94)
+3. [Redis Commands](https://jupiny.com/2020/03/28/redis-sorted-set/)
