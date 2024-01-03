@@ -95,5 +95,4 @@ _(그림 I-1-8) zsiplist node addition 2_
 
 # X. References
 1. [Redis Docs](https://redis.io/docs/data-types/)
-2. [Redis Skip List](http://redisgate.kr/redis/configuration/internal_skiplist.php) 
-3. [Redis Zip List](https://songhayoung.github.io/2021/06/04/Redis/zset-vs-list/#%EA%B0%9C%EC%9A%94)
+2. [Redis Zip List](https://songhayoung.github.io/2021/06/04/Redis/zset-vs-list/#%EA%B0%9C%EC%9A%94)
