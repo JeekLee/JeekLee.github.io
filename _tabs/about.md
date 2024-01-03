@@ -3,6 +3,8 @@
 icon: fas fa-info-circle
 order: 4
 ---
+Backend Developer
 
-> Add Markdown syntax content to file `_tabs/about.md`{: .filepath } and it will show up on this page.
-{: .prompt-tip }
+SKKU SW/CE
+
+103 ROTC #58
