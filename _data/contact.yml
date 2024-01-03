@@ -26,3 +26,7 @@
 # - type: stack-overflow
 #   icon: 'fab fa-stack-overflow'
 #   url:  ''                  # Fill with your stackoverflow homepage
+
+- type: soundcloud
+  icon: "fa-brands fa-soundcloud"
+  url: 'https://soundcloud.com/jay_mild'
