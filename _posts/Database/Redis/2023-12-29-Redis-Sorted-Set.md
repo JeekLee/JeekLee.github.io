@@ -8,8 +8,8 @@ math: true
 ---
 
 
-# I. Data structure
-## 1. Zset
+## I. Data structure
+### 1. Zset
 ![redis-zset-structure](https://github.com/JeekLee/JeekLee.github.io/assets/72681875/7ab02688-1983-402f-a0d4-3feea33100ed)
 _(그림 I-1-1) Redis Zset 예시_
 
@@ -27,7 +27,7 @@ zset-max-ziplist-value 64
 ```
 {: file="redis.conf" }
 
-### 1) ZipList
+#### 1) ZipList
 Redis는 인메모리 방식의 데이터 저장소이다. 메모리(RAM)는 디스크와 비교했을 때 매우 비싼 자원이며, 메모리 사용 시 그에 따른 최적화가 필수적이다.
 데이터 타입 혹은 자료 구조에 따라 실질적인 데이터 외에 메모리 오버헤드가 발생하게 되는데, **경우에 따라 실 데이터의 몇 배에 달하는 자원이 필요**하다.
 사실 다른 DBMS에서 역시 메모리 오버헤드 문제는 동일하지만, 메모리(RAM)에서 발생하진 않기 때문에 상대적으로 중요도가 떨어지는 것에 가깝다.
@@ -55,7 +55,7 @@ _(그림 I-1-3) Zip List Entry 구조_
 - `itselflen`: 현재 Entry Value의 길이, 순방향 탐색 및 Value 조회에 사용(Value가 문자인 경우 1,2,5 byte, 숫자인 경우 1 byte)
 - `value`: 문자와 정수로 구분해 저장. 문자는 문자 그대로 저장하며 정수는 4, 8, 16, 24, 32, 64bit로 구분해 저장.
 
-#### 1. `prevlen` 구성
+##### 1. `prevlen` 구성
 이전 Entry의 길이가 `ZIP_BIGLEN`(254)보다 작으면 1 byte를 할당해 다음과 같이 길이를 표현한다.
 
 ![redis-ziplist-entry-prevlen-1](https://github.com/JeekLee/JeekLee.github.io/assets/72681875/7127f295-507d-4194-8d9c-ab23d4a0df9b)
@@ -65,7 +65,7 @@ _(그림 I-1-4) Zip List Entry prevlen(1byte)_
 ![redis-ziplist-entry-prevlen-2](https://github.com/JeekLee/JeekLee.github.io/assets/72681875/f942d4ce-9d24-4218-8834-5ce6b80f0bd2)
 _(그림 I-1-5) Zip List Entry prevlen(5byte)_
 
-#### 2. `itselflen` 구성
+##### 2. `itselflen` 구성
 > 맨 앞 2개 비트가 00, 01, 10이면 문자, 11은 숫자를 표현한다.
 {: .prompt-tip }
 
@@ -95,7 +95,7 @@ ZipList의 PUSH, POP Operation을 도식화하면 다음과 같다.
 ![redis-ziplist-operation](https://github.com/JeekLee/JeekLee.github.io/assets/72681875/e608b0cb-ff84-486b-8c8a-d8da6fb8a35c)
 _(그림 I-1-9) Zip List Operation Example_
 
-### 2) SkipList
+#### 2) SkipList
 **SkipList**는 정렬된 상태를 유지하면서 데이터를 삽입, 삭제, 조회할 수 있는 데이터 구조이다.
 SkipList는 LinkedList의 단점을 보완하기 위해 구현되었다. 정렬된 LinkedList가 존재한다고 가정할 때,
 특정 값을 지니는 노드를 찾으려면 최악의 경우 모든 노드와 일치 여부를 확인해야 한다.
@@ -146,7 +146,7 @@ Redis는 $$1/4$$ 확률을 사용하며, `server.h`{: .filepath} 파일에 다�
 ```
 {: file="server.h" }
 
-### 3) Redis SkipList
+#### 3) Redis SkipList
 - `LEX`(Lexicographic sorting, 사전순 정렬) 명령을 사용하기 위해 동일한 Score가 반복되는 것을 허용한다. 당연히 Value는 달라야 한다.
 - 역탐색을 위해 이전 노드를 가르키는 포인터(`*backward`)를 사용한다.
 - **최대 레벨을 32레벨로 제한**한다.
@@ -165,8 +165,8 @@ _(그림 I-1-15) zsiplist node addition 1_
 ![zskiplist-node1](https://github.com/JeekLee/JeekLee.github.io/assets/72681875/cc25d026-135e-4188-a98f-16d2f162c40a)
 _(그림 I-1-16) zsiplist node addition 2_
 
-# II. Commands
-## 1. ZADD: 생성 및 수정
+## II. Commands
+### 1. ZADD: 생성 및 수정
 ```bash
 jeeklee@ubuntu:/dir$ ZADD key score member
 ```
@@ -176,7 +176,7 @@ jeeklee@ubuntu:/dir$ ZADD fruit 10 strawberry
 jeeklee@ubuntu:/dir$ ZADD fruit 8 melon 4 orange 15 pineapple 5 banana
 ```
 
-## 2. ZSCORE: Value 조회
+### 2. ZSCORE: Value 조회
 ```bash
 jeeklee@ubuntu:/dir$ ZSCORE key member
 ```
@@ -185,7 +185,7 @@ jeeklee@ubuntu:/dir$ ZSCORE fruit banana
 "5"
 ```
 
-## 3. ZRANK: 순위 조회
+### 3. ZRANK: 순위 조회
 ```bash
 jeeklee@ubuntu:/dir$ ZRANK key member
 ```
@@ -194,7 +194,7 @@ jeeklee@ubuntu:/dir$ ZRANK fruit melon
 (integer) 2
 ```
 
-## 4. ZRANGE: 순위에 따른 범위 조회
+### 4. ZRANGE: 순위에 따른 범위 조회
 ```bash
 jeeklee@ubuntu:/dir$ ZRANGE key start stop
 ```
@@ -252,7 +252,7 @@ jeeklee@ubuntu:/dir$ ZREVRANGE fruit 0 -1 WITHSCORES
 12) "4" 
 ```
 
-## 5. ZRANGEBYSCORE: 값에 따른 범위 조회
+### 5. ZRANGEBYSCORE: 값에 따른 범위 조회
 ```bash
 jeeklee@ubuntu:/dir$ ZRANGEBYSCORE key min max  
 ```
@@ -266,7 +266,7 @@ jeeklee@ubuntu:/dir$ ZRANGEBYSCORE fruit 6 15 WITHSCORES
 6) "15"  
 ```
 
-## 6. ZREM: 특정 멤버 삭제
+### 6. ZREM: 특정 멤버 삭제
 ```bash
 jeeklee@ubuntu:/dir$ ZREM key member  
 ```
@@ -274,7 +274,7 @@ jeeklee@ubuntu:/dir$ ZREM key member
 jeeklee@ubuntu:/dir$ ZREM fruit pineapple  
 ```
 
-# III. References
+## III. References
 1. [Redis Docs](https://redis.io/docs/data-types/)
 2. [Redis Zip List](https://songhayoung.github.io/2021/06/04/Redis/zset-vs-list/#%EA%B0%9C%EC%9A%94)
 3. [Redis Commands](https://jupiny.com/2020/03/28/redis-sorted-set/)
